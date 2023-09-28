@@ -1,5 +1,5 @@
 import { Category, Prediction } from "./types";
-import { chat, Message } from "../openai";
+import { chat, Message } from "./openai";
 
 export async function generateDescription(panelId: string, predictions: Prediction[]): Promise<string> {
   const probabilities = predictions
