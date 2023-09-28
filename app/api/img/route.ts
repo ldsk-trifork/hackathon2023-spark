@@ -5,19 +5,13 @@ import { completion } from "../../service/openai";
 
 // Endpoint for receiving an image from the client
 export async function POST(req: NextRequest, res: NextResponse) {
-  const { image } = await req.json()
-  const prediction = getPredictionFromImage(image)
+  const json = await req.json()
+  const prediction = getPredictionFromImage(json.image)
 
   // TODO: Jens use data from blob to call OpenAI API
 
 
-  return NextResponse.json({
-    panelId: "123",
-    location: { lat: 0, lng: 0 },
-    priority: Priority.HIGH_IMPACT,
-    category: Category.CRACK,
-    description: "Big crack. Doesn't work."
-  })
+  return NextResponse.json(json)
 }
 
 // TODO Remove stupid impl.
