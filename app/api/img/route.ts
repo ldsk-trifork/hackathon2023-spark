@@ -8,6 +8,10 @@ import { getHighestScoringPrediction } from "@/app/service/predictions/getHighes
 // Endpoint for receiving an image from the client
 export async function POST(req: NextRequest, res: NextResponse) {
   const { paneId, image }: RequestBody = await req.json()
+  console.log(paneId)
+  if(paneId === undefined || paneId === "") {
+    return NextResponse.json({ message: "PaneId is undefined or empty" }, { status: 400 })
+  }
   // const prediction = getPredictionFromImage(image)
   const prediction = getPredictionFromId(paneId)
   const heighestScoringPrediction = getHighestScoringPrediction(prediction)
