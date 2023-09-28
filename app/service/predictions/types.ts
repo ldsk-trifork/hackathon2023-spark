@@ -29,13 +29,7 @@ export interface ReportData {
   description: string
 }
 
-export interface ResponseBody {
-  id: string;
-  description: string;
-  report: ReportData
-}
-
 export interface RequestBody {
-  id: string;
+  paneId: string;
   image: string;
 }

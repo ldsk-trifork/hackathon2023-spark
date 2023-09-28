@@ -7,16 +7,16 @@ import { getHighestScoringPrediction } from "@/app/service/predictions/getHighes
 
 // Endpoint for receiving an image from the client
 export async function POST(req: NextRequest, res: NextResponse) {
-  const { id, image }: RequestBody = await req.json()
+  const { paneId, image }: RequestBody = await req.json()
   // const prediction = getPredictionFromImage(image)
-  const prediction = getPredictionFromId(id)
+  const prediction = getPredictionFromId(paneId)
   const heighestScoringPrediction = getHighestScoringPrediction(prediction)
-  const descriptionPromise = generateDescription(id, prediction);
-  const sapDataPromise = getSapData(id)
+  const descriptionPromise = generateDescription(paneId, prediction);
+  const sapDataPromise = getSapData(paneId)
   const [description, sapData] = await Promise.all([descriptionPromise, sapDataPromise])
 
   return NextResponse.json({
-      panelId: id,
+      paneId,
       location: { lat: 42, lng: 42 },
       priority: Priority[heighestScoringPrediction.category],
       category: Category[heighestScoringPrediction.category],
