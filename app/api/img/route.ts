@@ -12,13 +12,14 @@ export async function POST(req: NextRequest, res: NextResponse) {
   if(paneId === undefined || paneId === "") {
     return NextResponse.json({ message: "PaneId is undefined or empty" }, { status: 400 })
   }
-  // const prediction = getPredictionFromImage(image)
+
   const prediction = getPredictionFromId(paneId)
   const heighestScoringPrediction = getHighestScoringPrediction(prediction)
+  
   const descriptionPromise = generateDescription(paneId, prediction);
-  const sapDataPromise = getSapData(paneId)
+  const sapId = paneIdToSapIdMapper(paneId as PaneId)
+  const sapDataPromise = getSapData(sapId)
   const [description, sapData] = await Promise.all([descriptionPromise, sapDataPromise])
-
   return NextResponse.json({
       paneId,
       location: { lat: 42, lng: 42 },
@@ -29,4 +30,15 @@ export async function POST(req: NextRequest, res: NextResponse) {
           ...sapData,
       }
   })
+}
+
+type PaneId = "RAT" | "DSAT" | "SAL"
+type SapId = "24" | "555" | "31121"
+function paneIdToSapIdMapper(paneId: PaneId): SapId {
+  switch(paneId) {
+    case "RAT": return "31121"
+    case "DSAT": return "24"
+    case "SAL": return "555"
+    default: throw new Error("Invalid paneId")
+  }
 }
