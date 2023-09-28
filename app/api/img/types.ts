@@ -34,3 +34,8 @@ export interface ResponseBody {
   description: string;
   report: ReportData
 }
+
+export interface RequestBody {
+  id: string;
+  image: string;
+}
