@@ -11,8 +11,9 @@ export async function POST(req: NextRequest, res: NextResponse) {
   // const prediction = getPredictionFromImage(image)
   const prediction = getPredictionFromId(id)
   const heighestScoringPrediction = getHighestScoringPrediction(prediction)
-  const description = await generateDescription(id, prediction);
-  const data = await getSapData(id)
+  const descriptionPromise = generateDescription(id, prediction);
+  const sapDataPromise = getSapData(id)
+  const [description, sapData] = await Promise.all([descriptionPromise, sapDataPromise])
 
   return NextResponse.json({
       panelId: id,
@@ -21,11 +22,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       category: Category[heighestScoringPrediction.category],
       description,
       sap: {
-          ...data,
-          NotificationDate: data.NotificationDate?.toISOString(),
-          NotificationTime: data.NotificationTime?.toISOString(),
-          CompletionDate: data.CompletionDate?.toISOString(),
-          RequiredEndDate: data.RequiredEndDate?.toISOString(),
+          ...sapData,
       }
   })
 }
