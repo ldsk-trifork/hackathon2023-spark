@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "openai": "4.10.0",
     "react": "latest",
     "react-dom": "latest",
     "next": "latest"

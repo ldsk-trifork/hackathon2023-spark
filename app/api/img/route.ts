@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { completion } from "../../service/openai";
 
 enum Priority {
   LOW,
@@ -38,4 +39,12 @@ export async function POST(req: NextRequest, res: NextResponse) {
     category: Category.CRACK,
     description: "Big crack. Doesn't work."
   })
+}
+
+// TODO Remove stupid impl.
+export async function GET(req: NextRequest): Promise<any> {
+    const prompt = req.nextUrl.searchParams.get('p') as string;
+    const text = await completion(prompt, Math.ceil(prompt.length / 4) + 100);
+
+    return NextResponse.json(text);
 }
