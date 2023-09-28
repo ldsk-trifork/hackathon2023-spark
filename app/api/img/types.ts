@@ -28,3 +28,9 @@ export interface ReportData {
   category: Category
   description: string
 }
+
+export interface ResponseBody {
+  id: string;
+  description: string;
+  report: ReportData
+}

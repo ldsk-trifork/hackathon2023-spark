@@ -12,11 +12,19 @@ interface RequestBody {
 export async function POST(req: NextRequest, res: NextResponse) {
   const { id, image }: RequestBody = await req.json()
   const prediction = getPredictionFromImage(image)
-
-  // const panelId = req.nextUrl.searchParams.get('panelId') as string;
+  const heighestScoringPrediction = getHighestScoringPrediction(prediction)
   const description = await generateDescription(id, prediction);
+  return NextResponse.json({
+      panelId: id,
+      location: { lat: 42, lng: 42 },
+      priority: Priority[heighestScoringPrediction.category],
+      category: Category[heighestScoringPrediction.category],
+      description
+  })
+}
 
-  return NextResponse.json(description)
+function getHighestScoringPrediction(predictions: Prediction[]): Prediction {
+    return predictions.reduce((acc, curr) => curr.confidence > acc.confidence ? curr : acc);
 }
 
 async function generateDescription(panelId: string, predictions: Prediction[]): Promise<string> {
@@ -27,11 +35,11 @@ async function generateDescription(panelId: string, predictions: Prediction[]): 
     const messages: Message[] = [
         {
             role: 'system',
-            content: `As a solar panel technician your task is to write a short (100 words) incident description based on probable diagnoses for panel '${panelId}'`
+            content: `You are an expert solar panel technician.`
         },
         {
             role: 'user',
-            content: `The possible diagnoses and their respective probabilities are: ${probabilities}`
+            content: `Write a short (75 words) incident description based on probable diagnoses for panel '${panelId}'. The probabilities for different errors are the following: ${probabilities}. Do not mention the probabilities in your response.`
         }
     ];
 

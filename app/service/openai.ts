@@ -6,7 +6,7 @@ const openai = new OpenAI({
 
 export async function completion(prompt: string, maxResponseTokens: number) {
     const completion = await openai.completions.create({
-        model: 'gpt-3.5-turbo-instruct',
+        model: 'gpt-4',
         prompt,
         max_tokens: maxResponseTokens
     });
@@ -21,9 +21,10 @@ export type Message = {
 
 export async function chat(messages: Message[], maxResponseTokens: number) {
     const completion = await openai.chat.completions.create({
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4',
         messages,
-        max_tokens: maxResponseTokens
+        max_tokens: maxResponseTokens,
+        temperature: 1.5
     });
 
     return completion.choices[0].message.content || '';
