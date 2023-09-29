@@ -31,11 +31,11 @@ interface NotificationResponse {
 
 
 export default async function getSapData(id: string) {
-  const { access_token } = await getBearerToken()
-  const url = `https://invokerscf-hack23-team3-s4-notifications-srv.cfapps.eu10.hana.ondemand.com/odata/v4/notifications/Headers?$filter=EquipmentNumber eq '${id}'`
+  const bearerToken = await getBearerToken()
+  const url = `${process.env.NOTIFICATIONS_SRV_HOST}/odata/v4/notifications/Headers?$filter=EquipmentNumber eq '${id}'`
   const data = await fetch(url, {
     headers: {
-      'Authorization': 'Bearer ' + access_token
+      'Authorization': 'Bearer ' + bearerToken
     }
   })
 

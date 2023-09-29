@@ -6,19 +6,34 @@ interface AccessTokenResponse {
   jti: string;
 }
 
-export default async function getBearerToken(): Promise<AccessTokenResponse> {
-  let headers = new Headers();
-  const username = 'sb-hack23-s4-notifications-invokerscf-hack23-team3!t8513';
-  const password = 'H/+UuW8L2SYYttqLSB2fcmj3xaY=';
-  headers.set('Authorization', 'Basic ' + base64Encode(username + ":" + password));
+type CachedResponse = AccessTokenResponse & {
+  expires_at: Date
+}
 
-  const url = "https://invokerscf.authentication.eu10.hana.ondemand.com/oauth/token?grant_type=client_credentials&response_type=token";
+let lastResponse: CachedResponse | null = null;
+
+export default async function getBearerToken(): Promise<string> {
+  if (lastResponse != null && lastResponse.expires_at > new Date()) {
+    return lastResponse.access_token;
+  }
+
+  const headers = new Headers();
+  headers.set('Authorization', 'Basic ' + base64Encode(process.env.CF_AUTH_CLIENT_ID + ":" + process.env.CF_AUTH_CLIENT_SECRET));
+
+  const url = `${process.env.CF_AUTH_HOST}/oauth/token?grant_type=client_credentials&response_type=token`;
+  const now = new Date();
   const response = await fetch(url, {
     method: 'GET',
     headers,
   });
 
-  return response.json();
+  const accessToken = await response.json();
+  lastResponse = {
+    ...accessToken,
+    expires_at: new Date(+now + (accessToken.expires_in * 1_000))
+  };
+
+  return accessToken.access_token;
 }
 
 function base64Encode(str: string) {
