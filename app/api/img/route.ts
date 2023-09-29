@@ -4,6 +4,7 @@ import { generateDescription } from "../../service/predictions/generateDescripti
 import getSapData from "@/app/service/sap";
 import { getPredictionFromId } from "@/app/service/predictions/getPrediciton";
 import { getHighestScoringPrediction } from "@/app/service/predictions/getHighestScoringPrediction";
+import {Notification} from "@/app/service/sap/sap";
 
 // Endpoint for receiving an image from the client
 export async function POST(req: NextRequest, res: NextResponse) {
@@ -22,7 +23,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const [description, sapData] = await Promise.all([descriptionPromise, sapDataPromise])
   return NextResponse.json({
       paneId,
-      location: { lat: 42, lng: 42 },
+      location: toLocation(sapData),
       priority: Priority[heighestScoringPrediction.category],
       category: Category[heighestScoringPrediction.category],
       description,
@@ -41,4 +42,13 @@ function paneIdToSapIdMapper(paneId: PaneId): SapId {
     case "SAL": return "555"
     default: throw new Error("Invalid paneId")
   }
+}
+
+function toLocation(notification: Notification) {
+    const lat = notification.Latitude == null ? NaN : parseFloat(notification.Latitude);
+    const lng = notification.Longitude == null ? NaN : parseFloat(notification.Longitude);
+
+    return isNaN(lat) || isNaN(lng)
+        ? null
+        : { lat, lng };
 }

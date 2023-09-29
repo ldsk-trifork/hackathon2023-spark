@@ -1,6 +1,6 @@
 import getBearerToken from "./getBearerToken"
 
-interface Notification {
+export interface Notification {
   NotificationNumber: string;
   OrderNumber: string;
   NotificationType: string;
@@ -22,6 +22,8 @@ interface Notification {
   Material: string;
   FunctionalLocation: null | string;
   EquipmentNumber: string;
+  Latitude: null | string;
+  Longitude: null | string;
 }
 
 interface NotificationResponse {
