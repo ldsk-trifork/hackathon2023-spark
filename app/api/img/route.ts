@@ -5,15 +5,26 @@ import getSapData from "@/app/service/sap";
 import { getPredictionFromId } from "@/app/service/predictions/getPrediciton";
 import { getHighestScoringPrediction } from "@/app/service/predictions/getHighestScoringPrediction";
 import {Notification} from "@/app/service/sap/sap";
+import { distance, closest } from "fastest-levenshtein";
+
+const paneIds = ["RAT", "DSAT", "SAL"];
 
 // Endpoint for receiving an image from the client
 export async function POST(req: NextRequest, res: NextResponse) {
-  const { paneId, image }: RequestBody = await req.json()
+  let { paneId, image }: RequestBody = await req.json()
   console.log(paneId)
   if(paneId === undefined || paneId === "") {
-    return NextResponse.json({ message: "PaneId is undefined or empty" }, { status: 400 })
-  } else if(paneId !== "RAT" && paneId !== "DSAT" && paneId !== "SAL") {
-    return NextResponse.json({ message: "Invalid paneId" }, { status: 400 })
+    return NextResponse.json({message: "PaneId is undefined or empty"}, {status: 400})
+  } else {
+    const candidate = closest(paneId, paneIds);
+    const dist = distance(paneId, candidate);
+    console.log(`Received ID: ${paneId}, best match: ${candidate}, distance: ${dist}`);
+
+    if (dist > 2) {
+      return NextResponse.json({ message: "Invalid paneId" }, { status: 400 })
+    } else {
+        paneId = candidate;
+    }
   }
 
   const prediction = getPredictionFromId(paneId)
