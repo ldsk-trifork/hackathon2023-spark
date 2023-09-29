@@ -12,6 +12,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
   console.log(paneId)
   if(paneId === undefined || paneId === "") {
     return NextResponse.json({ message: "PaneId is undefined or empty" }, { status: 400 })
+  } else if(paneId !== "RAT" && paneId !== "DSAT" && paneId !== "SAL") {
+    return NextResponse.json({ message: "Invalid paneId" }, { status: 400 })
   }
 
   const prediction = getPredictionFromId(paneId)
