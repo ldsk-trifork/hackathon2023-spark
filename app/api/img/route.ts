@@ -27,12 +27,14 @@ export async function POST(req: NextRequest, res: NextResponse) {
     [description, sapData] = await Promise.all([descriptionPromise, sapDataPromise])
   } catch (e) {
     console.error(e)
-    return NextResponse.json({ message: "Failed to get SAP data" }, { status: 500 })
+    // return NextResponse.json({ message: "Failed to get SAP data" }, { status: 500 })
+    description = "Hi Hinrik :)"
   }
-  
+
   return NextResponse.json({
       paneId,
-      location: toLocation(sapData),
+      // location: toLocation(sapData),
+      location: [64.13548, -21.89541],
       priority: Priority[heighestScoringPrediction.category],
       category: Category[heighestScoringPrediction.category],
       description,
