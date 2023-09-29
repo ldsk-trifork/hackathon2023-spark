@@ -7,7 +7,7 @@ import { getHighestScoringPrediction } from "@/app/service/predictions/getHighes
 import {Notification} from "@/app/service/sap/sap";
 import { distance, closest } from "fastest-levenshtein";
 
-const paneIds = ["RAT", "DSAT", "SAL"];
+const paneIds = ["RENX", "DSAT", "SAL"];
 
 // Endpoint for receiving an image from the client
 export async function POST(req: NextRequest, res: NextResponse) {
@@ -53,11 +53,11 @@ export async function POST(req: NextRequest, res: NextResponse) {
   })
 }
 
-type PaneId = "RAT" | "DSAT" | "SAL"
+type PaneId = "RENX" | "DSAT" | "SAL"
 type SapId = "24" | "555" | "31121"
 function paneIdToSapIdMapper(paneId: PaneId): SapId {
   switch(paneId) {
-    case "RAT": return "31121"
+    case "RENX": return "31121"
     case "DSAT": return "24"
     case "SAL": return "555"
     default: throw new Error("Invalid paneId")

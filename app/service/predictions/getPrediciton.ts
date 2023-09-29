@@ -30,7 +30,7 @@ export function getPredictionFromImage(image: string) {
 
 export function getPredictionFromId(id: string) {
   switch (id) {
-    case "RAT":
+    case "RENX":
       return mostLikelyCrack
     case "SAL":
       return mostLikelyScratch
