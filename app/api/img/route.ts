@@ -22,7 +22,14 @@ export async function POST(req: NextRequest, res: NextResponse) {
   const descriptionPromise = generateDescription(paneId, prediction);
   const sapId = paneIdToSapIdMapper(paneId as PaneId)
   const sapDataPromise = getSapData(sapId)
-  const [description, sapData] = await Promise.all([descriptionPromise, sapDataPromise])
+  let [description, sapData]: [string | undefined, Notification | undefined] = [undefined, undefined]
+  try {
+    [description, sapData] = await Promise.all([descriptionPromise, sapDataPromise])
+  } catch (e) {
+    console.error(e)
+    return NextResponse.json({ message: "Failed to get SAP data" }, { status: 500 })
+  }
+  
   return NextResponse.json({
       paneId,
       location: toLocation(sapData),
